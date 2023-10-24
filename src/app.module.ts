@@ -1,6 +1,11 @@
 import { Module } from '@nestjs/common';
 
-import { AuthGuard, KeycloakConnectModule, ResourceGuard, RoleGuard } from 'nest-keycloak-connect';
+import {
+  AuthGuard,
+  KeycloakConnectModule,
+  ResourceGuard,
+  RoleGuard,
+} from 'nest-keycloak-connect';
 import { APP_GUARD } from '@nestjs/core';
 
 @Module({
@@ -35,7 +40,6 @@ import { APP_GUARD } from '@nestjs/core';
       provide: APP_GUARD,
       useClass: RoleGuard,
     },
-
   ],
 })
 export class AppModule {}
