@@ -6,9 +6,7 @@
   "endOfLine": "lf",
   "tabWidth": 2,
   "quoteProps": "preserve",
-  "jsxSingleQuote": false,
   "arrowParens": "always",
   "bracketSameLine": false,
   "bracketSpacing": true,
-  "htmlWhitespaceSensitivity": "css"
 }

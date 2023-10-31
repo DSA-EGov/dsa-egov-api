@@ -1,4 +1,4 @@
-version: '3'
+version: "3.8"
 
 volumes:
   postgres_data:
@@ -13,6 +13,7 @@ services:
       POSTGRES_DB: keycloak
       POSTGRES_USER: keycloak
       POSTGRES_PASSWORD: password
+
   keycloak:
     image: quay.io/keycloak/keycloak:legacy
     environment:
@@ -25,6 +26,20 @@ services:
       KEYCLOAK_USER: admin
       KEYCLOAK_PASSWORD: Pa55w0rd
     ports:
-      - 8080:8080
+      - "8080:8080"
     depends_on:
       - postgres
+
+  dev:
+    container_name: api_dev
+    build:
+      dockerfile: Dockerfile
+      context: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./:/app
+    restart: unless-stopped
+    depends_on:
+      - postgres
+      - keycloak

@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-
 import {
   AuthGuard,
   KeycloakConnectModule,
@@ -7,6 +6,8 @@ import {
   RoleGuard,
 } from 'nest-keycloak-connect';
 import { APP_GUARD } from '@nestjs/core';
+
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -17,7 +18,7 @@ import { APP_GUARD } from '@nestjs/core';
       secret: '1cWw2WPAlgDvCAaYmaFCEVsyb4fXfeVS',
     }),
   ],
-  controllers: [],
+  controllers: [AppController],
   providers: [
     // GLOBAL LEVEL RESOURCE GUARD CHECKS FOR JWT TOKEN
     {
