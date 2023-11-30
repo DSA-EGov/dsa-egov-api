@@ -8,6 +8,9 @@ dependencies:
   '@nestjs/common':
     specifier: ^10.0.0
     version: 10.2.7(reflect-metadata@0.1.13)(rxjs@7.8.1)
+  '@nestjs/config':
+    specifier: ^3.1.1
+    version: 3.1.1(@nestjs/common@10.2.7)(reflect-metadata@0.1.13)
   '@nestjs/core':
     specifier: ^10.0.0
     version: 10.2.7(@nestjs/common@10.2.7)(@nestjs/platform-express@10.2.7)(reflect-metadata@0.1.13)(rxjs@7.8.1)
@@ -20,6 +23,12 @@ dependencies:
   '@nestjs/typeorm':
     specifier: ^10.0.0
     version: 10.0.0(@nestjs/common@10.2.7)(@nestjs/core@10.2.7)(reflect-metadata@0.1.13)(rxjs@7.8.1)(typeorm@0.3.17)
+  dotenv:
+    specifier: ^16.3.1
+    version: 16.3.1
+  joi:
+    specifier: ^17.11.0
+    version: 17.11.0
   nest-keycloak-connect:
     specifier: ^1.9.2
     version: 1.9.2(@nestjs/common@10.2.7)(@nestjs/core@10.2.7)(keycloak-connect@21.1.2)
@@ -488,6 +497,16 @@ packages:
     dependencies:
       '@jridgewell/trace-mapping': 0.3.9
 
+  /@hapi/hoek@9.3.0:
+    resolution: {integrity: sha512-/c6rf4UJlmHlC9b5BaNvzAcFv7HZ2QHaV0D4/HNlBdvFnvQq8RI4kYdhyPCl7Xj+oWvTWQ8ujhqS53LIgAe6KQ==}
+    dev: false
+
+  /@hapi/topo@5.1.0:
+    resolution: {integrity: sha512-foQZKJig7Ob0BMAYBfcJk8d77QtOe7Wo4ox7ff1lQYoNNAb6jwcY1ncdoy2e9wQZzvNy7ODZCYJkK8kzmcAnAg==}
+    dependencies:
+      '@hapi/hoek': 9.3.0
+    dev: false
+
   /@isaacs/cliui@8.0.2:
     resolution: {integrity: sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA==}
     engines: {node: '>=12'}
@@ -838,6 +857,20 @@ packages:
       uid: 2.0.2
     dev: false
 
+  /@nestjs/config@3.1.1(@nestjs/common@10.2.7)(reflect-metadata@0.1.13):
+    resolution: {integrity: sha512-qu5QlNiJdqQtOsnB6lx4JCXPQ96jkKUsOGd+JXfXwqJqZcOSAq6heNFg0opW4pq4J/VZoNwoo87TNnx9wthnqQ==}
+    peerDependencies:
+      '@nestjs/common': ^8.0.0 || ^9.0.0 || ^10.0.0
+      reflect-metadata: ^0.1.13
+    dependencies:
+      '@nestjs/common': 10.2.7(reflect-metadata@0.1.13)(rxjs@7.8.1)
+      dotenv: 16.3.1
+      dotenv-expand: 10.0.0
+      lodash: 4.17.21
+      reflect-metadata: 0.1.13
+      uuid: 9.0.0
+    dev: false
+
   /@nestjs/core@10.2.7(@nestjs/common@10.2.7)(@nestjs/platform-express@10.2.7)(reflect-metadata@0.1.13)(rxjs@7.8.1):
     resolution: {integrity: sha512-5GSu53QUUcwX17sNmlJPa1I0wIeAZOKbedyVuQx0ZAwWVa9g0wJBbsNP+R4EJ+j5Dkdzt/8xkiZvnKt8RFRR8g==}
     requiresBuild: true
@@ -981,6 +1014,20 @@ packages:
     requiresBuild: true
     dev: true
     optional: true
+
+  /@sideway/address@4.1.4:
+    resolution: {integrity: sha512-7vwq+rOHVWjyXxVlR76Agnvhy8I9rpzjosTESvmhNeXOXdZZB15Fl+TI9x1SiHZH5Jv2wTGduSxFDIaq0m3DUw==}
+    dependencies:
+      '@hapi/hoek': 9.3.0
+    dev: false
+
+  /@sideway/formula@3.0.1:
+    resolution: {integrity: sha512-/poHZJJVjx3L+zVD6g9KgHfYnb443oi7wLu/XKojDviHy6HOEOA6z1Trk5aR1dGcmPenJEgb2sK2I80LeS3MIg==}
+    dev: false
+
+  /@sideway/pinpoint@2.0.0:
+    resolution: {integrity: sha512-RNiOoTPkptFtSVzQevY/yWtZwf/RxyVnPy/OcA9HBM3MlGDnBEYL5B41H0MTn0Uec8Hi+2qUtTfG2WWZBmMejQ==}
+    dev: false
 
   /@sinclair/typebox@0.27.8:
     resolution: {integrity: sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==}
@@ -1802,8 +1849,8 @@ packages:
     engines: {node: '>=6.0'}
     dev: true
 
-  /chromedriver@118.0.1:
-    resolution: {integrity: sha512-GlGfyRE47IuSJnuadIiDy89EMDMQFBVWxUmiclLJKzQhFsiWAtcIr/mNOxjljZdsw9IwIOQEkrB9wympKYFPLw==}
+  /chromedriver@119.0.0:
+    resolution: {integrity: sha512-3TmabGT7xg57/Jbsg6B/Kqk3HaSbCP1ZHkR5zNft5vT/IWKjZCAGTH9waMI+i5KHSEiMH0zOw/WF98l+1Npkpw==}
     engines: {node: '>=18'}
     hasBin: true
     requiresBuild: true
@@ -2170,6 +2217,11 @@ packages:
   /diff@4.0.2:
     resolution: {integrity: sha512-58lmxKSA4BNyLz+HHMUzlOEpg09FV+ev6ZMe3vJihgdxzgcwZ8VoEEPmALCZG9LmqfVoNMMKpttIYTVG6uDY7A==}
     engines: {node: '>=0.3.1'}
+
+  /dotenv-expand@10.0.0:
+    resolution: {integrity: sha512-GopVGCpVS1UKH75VKHGuQFqS1Gusej0z4FyQkPdwjil2gNIv+LNsqBlboOzpJFZKVT95GkCyWJbBSdFEFUWI2A==}
+    engines: {node: '>=12'}
+    dev: false
 
   /dotenv@16.3.1:
     resolution: {integrity: sha512-IPzF4w4/Rd94bA9imS68tZBaYyBWSCE47V1RGuMrB94iyTOIEwRmVL2x/4An+6mETpLrKJ5hQkB8W4kFAadeIQ==}
@@ -3445,6 +3497,16 @@ packages:
       - ts-node
     dev: true
 
+  /joi@17.11.0:
+    resolution: {integrity: sha512-NgB+lZLNoqISVy1rZocE9PZI36bL/77ie924Ri43yEvi9GUUMPeyVIr8KdFTMUlby1p0PBYMk9spIxEUQYqrJQ==}
+    dependencies:
+      '@hapi/hoek': 9.3.0
+      '@hapi/topo': 5.1.0
+      '@sideway/address': 4.1.4
+      '@sideway/formula': 3.0.1
+      '@sideway/pinpoint': 2.0.0
+    dev: false
+
   /js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
     dev: true
@@ -3514,7 +3576,7 @@ packages:
     dependencies:
       jwk-to-pem: 2.0.5
     optionalDependencies:
-      chromedriver: 118.0.1
+      chromedriver: 119.0.0
     transitivePeerDependencies:
       - debug
       - supports-color

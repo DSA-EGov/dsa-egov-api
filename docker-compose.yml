@@ -1,26 +1,28 @@
-version: "3.8"
-
 volumes:
   postgres_data:
     driver: local
 
 services:
   postgres:
-    image: postgres
+    container_name: egov_db
+    image: postgres:latest
+    ports:
+      - "5433:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - ./pgdata:/var/lib/postgresql/data
     environment:
       POSTGRES_DB: keycloak
-      POSTGRES_USER: keycloak
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
 
   keycloak:
+    container_name: egov_keycloak
     image: quay.io/keycloak/keycloak:legacy
     environment:
       DB_VENDOR: POSTGRES
       DB_ADDR: postgres
       DB_DATABASE: keycloak
-      DB_USER: keycloak
+      DB_USER: postgres
       DB_SCHEMA: public
       DB_PASSWORD: password
       KEYCLOAK_USER: admin
@@ -31,15 +33,14 @@ services:
       - postgres
 
   dev:
-    container_name: api_dev
+    container_name: egov_api
     build:
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
       context: .
     ports:
       - "3000:3000"
     volumes:
       - ./:/app
-    restart: unless-stopped
     depends_on:
       - postgres
       - keycloak
