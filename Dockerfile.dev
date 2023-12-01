@@ -4,6 +4,7 @@ WORKDIR /app
 
 RUN apk update
 RUN apk upgrade
+RUN npm upgrade -g
 RUN npm i -g pnpm
 
 COPY package*.json ./

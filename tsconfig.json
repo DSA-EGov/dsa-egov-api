@@ -21,6 +21,11 @@
     "noFallthroughCasesInSwitch": true,
     "strict": true,
     "allowImportingTsExtensions": false,
-    "allowJs": true
+    "allowJs": true,
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    }
   }
 }

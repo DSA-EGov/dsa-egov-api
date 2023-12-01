@@ -7,13 +7,13 @@ services:
     container_name: egov_db
     image: postgres:latest
     ports:
-      - "5433:5432"
+      - "5433:5432" # "5432:5432" if pg not installed locally
     volumes:
       - egov_ai_pgdata:/var/lib/postgresql/data
     environment:
-      POSTGRES_DB: keycloak
+      PGDATA: /var/lib/postgresql/data
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
+      POSTGRES_PASSWORD: postgres
 
   keycloak:
     container_name: egov_keycloak
@@ -24,23 +24,32 @@ services:
       DB_DATABASE: keycloak
       DB_USER: postgres
       DB_SCHEMA: public
-      DB_PASSWORD: password
+      DB_PASSWORD: postgres
       KEYCLOAK_USER: admin
-      KEYCLOAK_PASSWORD: Pa55w0rd
+      KEYCLOAK_PASSWORD: admin
     ports:
       - "8080:8080"
     depends_on:
       - postgres
 
-  api:
-    container_name: egov_api
+  api_dev:
+    container_name: egov_api_dev
     build:
       dockerfile: Dockerfile.dev
-      context: .
     ports:
       - "3000:3000"
     volumes:
       - ./:/app
+    depends_on:
+      - postgres
+      - keycloak
+
+  api_prod:
+    container_name: egov_api_prod
+    build:
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
     depends_on:
       - postgres
       - keycloak
