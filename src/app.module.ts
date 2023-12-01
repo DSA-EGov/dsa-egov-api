@@ -13,7 +13,7 @@ import { AppController } from './app.controller';
 import { SessionModule } from './session/session.module';
 import { envValidationSchema } from './validation-schemas/env.schema';
 
-import 'dotenv/config'
+import 'dotenv/config';
 
 @Module({
   imports: [
@@ -28,7 +28,6 @@ import 'dotenv/config'
       },
     }),
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (config: ConfigService<Env>) =>
         ({

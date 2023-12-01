@@ -32,7 +32,7 @@ services:
     depends_on:
       - postgres
 
-  dev:
+  api:
     container_name: egov_api
     build:
       dockerfile: Dockerfile.dev

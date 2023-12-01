@@ -4,6 +4,6 @@ import { Controller, Get } from '@nestjs/common';
 export class AppController {
   @Get('test')
   test() {
-    return '123';
+    return 'Test';
   }
 }
