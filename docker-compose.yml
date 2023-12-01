@@ -1,5 +1,5 @@
 volumes:
-  postgres_data:
+  egov_ai_pgdata:
     driver: local
 
 services:
@@ -9,7 +9,7 @@ services:
     ports:
       - "5433:5432"
     volumes:
-      - ./pgdata:/var/lib/postgresql/data
+      - egov_ai_pgdata:/var/lib/postgresql/data
     environment:
       POSTGRES_DB: keycloak
       POSTGRES_USER: postgres

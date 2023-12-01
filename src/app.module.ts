@@ -6,19 +6,21 @@ import {
   RoleGuard,
 } from 'nest-keycloak-connect';
 import { APP_GUARD } from '@nestjs/core';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import { AppController } from './app.controller';
 import { SessionModule } from './session/session.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule, ConfigService } from '@nestjs/config';
 import { envValidationSchema } from './validation-schemas/env.schema';
+
+import 'dotenv/config'
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: ['env.dev', 'env.prod', '.env'],
+      envFilePath: ['.env.dev', '.env.prod', '.env'],
       isGlobal: true,
-      cache: process.env.NODE_ENV === 'production',
+      cache: process.env['NODE_ENV'] === 'production',
       validationSchema: envValidationSchema,
       validationOptions: {
         allowUnknown: true,
@@ -26,18 +28,20 @@ import { envValidationSchema } from './validation-schemas/env.schema';
       },
     }),
     TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (config: ConfigService<Env>) => ({
-        synchronize: config.get('NODE_ENV') === 'development',
-        type: config.get('DB_TYPE'),
-        host: config.get('DB_HOST'),
-        port: config.get('DB_PORT'),
-        schema: config.get('DB_SCHEMA'),
-        database: config.get('DB_NAME'),
-        username: config.get('DB_USER'),
-        password: config.get('DB_PASSWORD'),
-        entities: ['**/*.entity.js']
-      } as any),
+      useFactory: (config: ConfigService<Env>) =>
+        ({
+          synchronize: config.get('NODE_ENV') === 'development',
+          type: config.get('DB_TYPE'),
+          host: config.get('DB_HOST'),
+          port: config.get('DB_PORT'),
+          schema: config.get('DB_SCHEMA'),
+          database: config.get('DB_NAME'),
+          username: config.get('DB_USER'),
+          password: config.get('DB_PASSWORD'),
+          entities: ['**/*.entity.js'],
+        }) as any,
     }),
     KeycloakConnectModule.register({
       authServerUrl: 'http://localhost:8080/auth',
