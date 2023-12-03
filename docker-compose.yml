@@ -1,6 +1,8 @@
 volumes:
   egov_ai_pgdata:
     driver: local
+  egov_ai_keycloak_data:
+    driver: local
 
 services:
   postgres:
