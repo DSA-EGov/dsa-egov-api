@@ -1,6 +1,6 @@
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { KeycloakConnectModule } from 'nest-keycloak-connect';
+import { KeycloakConnectModule, PolicyEnforcementMode, TokenValidation } from "nest-keycloak-connect";
 import { ModuleMetadata } from '@nestjs/common';
 
 import { envValidationSchema } from '@/validation-schemas/env.schema';
@@ -38,10 +38,13 @@ export const appModuleImports: ModuleMetadata['imports'] = [
   KeycloakConnectModule.registerAsync({
     inject: [ConfigService],
     useFactory: (config: ConfigService<Env>) => ({
+      useNestLogger: false,
       authServerUrl: config.get('KEYCLOAK_AUTH_URL'),
       realm: config.get('KEYCLOAK_REALM'),
       clientId: config.get('KEYCLOAK_CLIENT_ID'),
       secret: config.get('KEYCLOAK_SECRET'),
+      policyEnforcement: PolicyEnforcementMode.ENFORCING,
+      tokenValidation: TokenValidation.OFFLINE,
     }),
   }),
   HttpModule.registerAsync({

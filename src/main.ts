@@ -1,10 +1,10 @@
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
-
-import { AppModule } from './app.module';
 import { WsAdapter } from '@nestjs/platform-ws';
 import { Logger } from '@nestjs/common';
+
+import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -14,35 +14,23 @@ async function bootstrap() {
   app.useLogger(logger);
   app.useWebSocketAdapter(new WsAdapter(app));
   app.enableCors({
-    origin: '*',
+    origin: /https?:\/\/localhost:[0-9]{1,5}/i,
     credentials: true,
+    methods: ['GET', 'POST', 'DELETE', 'PUT'],
+    allowedHeaders: '*',
+    exposedHeaders: '*',
+    maxAge: 60, // cache CORS headers for 1 min
   });
 
   const swaggerConfig = new DocumentBuilder()
-    .setTitle('PBL API')
-    .addBasicAuth()
+    .setTitle('eGov')
     .addBearerAuth()
     .setVersion('0.0.1')
-    .addOAuth2({
-      // for keycloak
-      type: 'oauth2',
-      openIdConnectUrl: config.get('KEYCLOAK_AUTH_URL'),
-      flows: {
-        password: {
-          scopes: {},
-          tokenUrl: config.get('KEYCLOAK_AUTH_URL') ,
-          authorizationUrl: config.get('KEYCLOAK_AUTH_URL')
-        }
-      }
-    })
+    .setDescription('eGov.AI API documentation.')
     .build();
 
   const document = SwaggerModule.createDocument(app, swaggerConfig);
-  SwaggerModule.setup(config.get('SWAGGER_PATH'), app, document, {
-    swaggerOptions: {
-
-    }
-  });
+  SwaggerModule.setup(config.get('SWAGGER_PATH'), app, document);
 
   await app.listen(config.get('PORT'));
   logger.log(`Application is running on: ${await app.getUrl()}`);

@@ -1,22 +1,61 @@
-import { Controller, Get, HttpCode, HttpStatus } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Post,
+  Put,
+} from '@nestjs/common';
+import { ApiBearerAuth, ApiBody, ApiParam, ApiTags } from '@nestjs/swagger';
+import { AuthenticatedUser } from 'nest-keycloak-connect';
 
-import { SessionService } from './session.service';
-import { ApiOAuth2, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ResponseDto } from '@/dto/response.dto';
 import { Session } from '@/entities/session.entity';
-import { AuthenticatedUser } from "nest-keycloak-connect";
+import type { User } from '@/types/user';
 
-@ApiTags('session')
-@Controller('session')
+import { SessionService } from './session.service';
+import { PostSessionDto } from './dto/post-session.dto';
+import { ActionResponseDto } from '@/dto/action-response.dto';
+
+@ApiTags('Sessions')
+@Controller('sessions')
 export class SessionController {
   constructor(private readonly sessionService: SessionService) {}
 
-  @ApiOperation({})
-  @Get('get')
-  @HttpCode(HttpStatus.OK)
-  @ApiOAuth2(['profile'])
-  public getSessions(@AuthenticatedUser() user: any): Promise<ResponseDto<Session>> {
-    console.log(user)
-    return this.sessionService.getSessions();
+  @Get()
+  @ApiBearerAuth()
+  public getSessions(
+    @AuthenticatedUser() user: User,
+  ): Promise<ResponseDto<Session>> {
+    return this.sessionService.getSessions(user.sub);
   }
+
+  @Post()
+  @ApiBody({ type: PostSessionDto })
+  @ApiBearerAuth()
+  public postSession(
+    @AuthenticatedUser() user: User,
+    @Body() body: PostSessionDto,
+  ) {
+    return this.sessionService.postSession(user.sub, body);
+  }
+
+  @Delete(':id')
+  @ApiBearerAuth()
+  @ApiParam({ name: 'id', type: String })
+  public deleteSession(
+    @AuthenticatedUser() user: User,
+    @Param('id', ParseUUIDPipe) sessionId: string,
+  ): Promise<ActionResponseDto> {
+    return this.sessionService.deleteSession(user.sub, sessionId);
+  }
+
+  @Put(':id')
+  @ApiBearerAuth()
+  public updateSession(
+    @AuthenticatedUser() user: User,
+    @Param('id', ParseUUIDPipe) id: string,
+  ) {}
 }
