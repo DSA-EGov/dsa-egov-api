@@ -26,7 +26,7 @@ export const appModuleImports: ModuleMetadata['imports'] = [
   }),
   TypeOrmModule.forRootAsync({
     inject: [ConfigService],
-    useFactory: (config: ConfigService<Env>) =>
+    useFactory: (config: ConfigService<EgovEnv>) =>
       ({
         synchronize: config.get('NODE_ENV') === 'development',
         type: config.get('DB_TYPE'),
@@ -41,7 +41,7 @@ export const appModuleImports: ModuleMetadata['imports'] = [
   }),
   KeycloakConnectModule.registerAsync({
     inject: [ConfigService],
-    useFactory: (config: ConfigService<Env>) => ({
+    useFactory: (config: ConfigService<EgovEnv>) => ({
       useNestLogger: false,
       authServerUrl: config.get('KEYCLOAK_AUTH_URL'),
       realm: config.get('KEYCLOAK_REALM'),

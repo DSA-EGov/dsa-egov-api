@@ -83,11 +83,7 @@ export class SessionService {
     sessionId: string,
     dto: UpdateSessionDto,
   ): Promise<SessionDto> {
-    const session = await this.sessionsRepo.findOne({
-      where: {
-        id: sessionId,
-      },
-    });
+    const session = await this.sessionsRepo.findOneBy({ id: sessionId });
 
     if (!session) {
       throw new NotFoundException();

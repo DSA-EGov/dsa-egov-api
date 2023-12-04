@@ -1,6 +1,6 @@
 import Joi from 'joi';
 
-export const envValidationSchema = Joi.object<Env>({
+export const envValidationSchema = Joi.object<EgovEnv>({
   NODE_ENV: Joi.string().default('development'),
   PORT: Joi.number().port().default(3000),
 

@@ -1,8 +1,8 @@
 declare global {
   namespace NodeJS {
-    interface ProcessEnv extends Env {}
+    interface ProcessEnv extends EgovEnv {}
   }
-  interface Env {
+  interface EgovEnv {
     readonly NODE_ENV: 'production' | 'development';
     readonly PORT: string;
 
@@ -20,6 +20,10 @@ declare global {
     readonly KEYCLOAK_CLIENT_ID: string;
     readonly KEYCLOAK_REALM: string;
     readonly KEYCLOAK_AUTH_URL: string;
+
+    readonly AZURE_EGOV_URL: string;
+    readonly AZURE_EGOV_HEADER: string;
+    readonly AZURE_EGOV_KEY: string;
   }
 }
 
