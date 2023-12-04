@@ -52,11 +52,12 @@ export class ChatService {
     };
   }
 
+  // Returns the UUID of created entity
   public async postQuestion(
     userId: string,
     sessionId: string,
     text: string,
-  ): Promise<void> {
+  ): Promise<string> {
     const question = this.questionsRepo.create();
     const session = await this.sessionsRepo.findOne({
       where: { id: sessionId },
@@ -79,7 +80,22 @@ export class ChatService {
 
     await this.questionsRepo.save(question);
     await this.sessionsRepo.save(session);
+
+    return question.id;
   }
 
-  public async postAnswer(): Promise<void> {}
+  public async postAnswer(
+    questionId: string,
+    responseText: string,
+  ): Promise<void> {
+    const question = await this.questionsRepo.findOne({
+      where: {
+        id: questionId,
+      },
+    });
+
+    question.responseText = responseText;
+
+    await this.questionsRepo.save(question);
+  }
 }

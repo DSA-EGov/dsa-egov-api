@@ -7,7 +7,6 @@ import { AiResponse } from './ai.types';
 import { firstValueFrom } from 'rxjs';
 import { ChatService } from '@/chat/chat.service';
 import { AiQuestionDto } from '@/ai/dto/ai-question.dto';
-import { text } from 'express';
 
 @Injectable()
 export class AiService {
@@ -19,9 +18,13 @@ export class AiService {
     private readonly chatService: ChatService,
   ) {}
 
-  public async sendQuestion(dto: AiQuestionDto): Promise<AiResponse> {
+  public async sendQuestion(dto: AiQuestionDto): Promise<string> {
     try {
-      await this.chatService.postQuestion(dto.userId, dto.sessionId, dto.text);
+      const questionId = await this.chatService.postQuestion(
+        dto.userId,
+        dto.sessionId,
+        dto.text,
+      );
 
       const req = await firstValueFrom(
         this.httpService.post<AiResponse>(
@@ -39,9 +42,12 @@ export class AiService {
         ),
       );
 
-      this.logger.debug(dto.text + ': ' + req.data.answers[0].answer);
+      const answer = req.data.answers[0].answer
+      await this.chatService.postAnswer(questionId, answer);
 
-      return req.data;
+      this.logger.debug(dto.text + ': ' + answer);
+
+      return answer;
     } catch (err) {
       console.error(err);
     }
