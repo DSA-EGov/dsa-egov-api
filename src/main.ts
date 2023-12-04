@@ -16,7 +16,7 @@ async function bootstrap() {
   app.enableCors({
     origin: /https?:\/\/localhost:[0-9]{1,5}/i,
     credentials: true,
-    methods: ['GET', 'POST', 'DELETE', 'PUT'],
+    methods: ['GET', 'POST', 'DELETE', 'PATCH'],
     allowedHeaders: '*',
     exposedHeaders: '*',
     maxAge: 60, // cache CORS headers for 1 min

@@ -5,8 +5,8 @@ import {
   Get,
   Param,
   ParseUUIDPipe,
+  Patch,
   Post,
-  Put,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiParam, ApiTags } from '@nestjs/swagger';
 import { AuthenticatedUser } from 'nest-keycloak-connect';
@@ -51,7 +51,7 @@ export class SessionController {
     return this.sessionService.deleteSession(user.sub, sessionId);
   }
 
-  @Put(':id')
+  @Patch(':id')
   @ApiBearerAuth()
   @ApiParam({ name: 'id', type: String })
   @ApiBody({ type: UpdateSessionDto })

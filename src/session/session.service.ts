@@ -46,10 +46,11 @@ export class SessionService {
     body: PostSessionDto,
   ): Promise<SessionDto> {
     const session = this.sessionsRepo.create();
-    session.name = body.name;
+    session.name = body.name || null;
     session.userId = userId;
 
     await this.sessionsRepo.save(session);
+    this.logger.debug(`Created ${JSON.stringify(session)}`);
 
     return plainToInstance(SessionDto, session);
   }
@@ -99,6 +100,7 @@ export class SessionService {
     session.name = dto.name ?? session.name;
 
     await this.sessionsRepo.save(session);
+    this.logger.debug(`Updated ${JSON.stringify(session)}`);
 
     return plainToInstance(SessionDto, session);
   }
