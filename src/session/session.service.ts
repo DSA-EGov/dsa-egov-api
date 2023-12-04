@@ -6,12 +6,13 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { plainToInstance } from 'class-transformer';
 
 import { Session } from '@/entities/session.entity';
 import { ResponseDto } from '@/dto/response.dto';
 import { ActionResponseDto } from '@/dto/action-response.dto';
 
-import { PostSessionDto } from './dto/post-session.dto';
+import { PostSessionDto, SessionDto, UpdateSessionDto } from './dto';
 
 @Injectable()
 export class SessionService {
@@ -22,9 +23,12 @@ export class SessionService {
     private readonly sessionsRepo: Repository<Session>,
   ) {}
 
-  public async getSessions(userId: string): Promise<ResponseDto<Session>> {
+  public async getSessions(userId: string): Promise<ResponseDto<SessionDto>> {
     let sessions = await this.sessionsRepo.find({
       where: { userId },
+      order: {
+        createdAt: 'DESC',
+      },
       skip: 0, // TODO: add filtering
       take: 999,
     });
@@ -33,21 +37,21 @@ export class SessionService {
 
     return {
       count: sessions.length,
-      data: sessions,
+      data: plainToInstance(SessionDto, sessions),
     };
   }
 
   public async postSession(
     userId: string,
     body: PostSessionDto,
-  ): Promise<Session> {
+  ): Promise<SessionDto> {
     const session = this.sessionsRepo.create();
     session.name = body.name;
     session.userId = userId;
 
     await this.sessionsRepo.save(session);
 
-    return session;
+    return plainToInstance(SessionDto, session);
   }
 
   public async deleteSession(
@@ -73,5 +77,29 @@ export class SessionService {
     };
   }
 
-  public async updateSession(): Promise<any> {}
+  public async updateSession(
+    userId: string,
+    sessionId: string,
+    dto: UpdateSessionDto,
+  ): Promise<SessionDto> {
+    const session = await this.sessionsRepo.findOne({
+      where: {
+        id: sessionId,
+      },
+    });
+
+    if (!session) {
+      throw new NotFoundException();
+    }
+
+    if (session.userId !== userId) {
+      throw new UnauthorizedException();
+    }
+
+    session.name = dto.name ?? session.name;
+
+    await this.sessionsRepo.save(session);
+
+    return plainToInstance(SessionDto, session);
+  }
 }

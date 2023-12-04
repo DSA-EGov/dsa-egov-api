@@ -1,6 +1,10 @@
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { KeycloakConnectModule, PolicyEnforcementMode, TokenValidation } from "nest-keycloak-connect";
+import {
+  KeycloakConnectModule,
+  PolicyEnforcementMode,
+  TokenValidation,
+} from 'nest-keycloak-connect';
 import { ModuleMetadata } from '@nestjs/common';
 
 import { envValidationSchema } from '@/validation-schemas/env.schema';

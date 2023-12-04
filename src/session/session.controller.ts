@@ -12,12 +12,11 @@ import { ApiBearerAuth, ApiBody, ApiParam, ApiTags } from '@nestjs/swagger';
 import { AuthenticatedUser } from 'nest-keycloak-connect';
 
 import { ResponseDto } from '@/dto/response.dto';
-import { Session } from '@/entities/session.entity';
 import type { User } from '@/types/user';
-
-import { SessionService } from './session.service';
-import { PostSessionDto } from './dto/post-session.dto';
 import { ActionResponseDto } from '@/dto/action-response.dto';
+
+import { PostSessionDto, SessionDto, UpdateSessionDto } from './dto';
+import { SessionService } from './session.service';
 
 @ApiTags('Sessions')
 @Controller('sessions')
@@ -28,7 +27,7 @@ export class SessionController {
   @ApiBearerAuth()
   public getSessions(
     @AuthenticatedUser() user: User,
-  ): Promise<ResponseDto<Session>> {
+  ): Promise<ResponseDto<SessionDto>> {
     return this.sessionService.getSessions(user.sub);
   }
 
@@ -54,8 +53,13 @@ export class SessionController {
 
   @Put(':id')
   @ApiBearerAuth()
+  @ApiParam({ name: 'id', type: String })
+  @ApiBody({ type: UpdateSessionDto })
   public updateSession(
     @AuthenticatedUser() user: User,
-    @Param('id', ParseUUIDPipe) id: string,
-  ) {}
+    @Param('id', ParseUUIDPipe) sessionId: string,
+    @Body() dto: UpdateSessionDto,
+  ): Promise<SessionDto> {
+    return this.sessionService.updateSession(user.sub, sessionId, dto);
+  }
 }
