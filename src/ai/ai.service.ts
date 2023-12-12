@@ -1,12 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
-
-import type { AiQuestion } from './ai.types';
-import { AiResponse } from './ai.types';
 import { firstValueFrom } from 'rxjs';
-import { ChatService } from '@/chat/chat.service';
-import { AiQuestionDto } from '@/ai/dto/ai-question.dto';
+
+import type { AiQueryAnswer, AiQuestion } from './ai.types';
+import { AiResponse } from './ai.types';
 
 @Injectable()
 export class AiService {
@@ -15,17 +13,10 @@ export class AiService {
   constructor(
     private readonly httpService: HttpService,
     private readonly configService: ConfigService<EgovEnv>,
-    private readonly chatService: ChatService,
   ) {}
 
-  public async sendQuestion(dto: AiQuestionDto): Promise<string> {
+  public async queryAnswer(dto: AiQueryAnswer): Promise<string> {
     try {
-      const questionId = await this.chatService.postQuestion(
-        dto.userId,
-        dto.sessionId,
-        dto.text,
-      );
-
       const req = await firstValueFrom(
         this.httpService.post<AiResponse>(
           this.configService.get('AZURE_EGOV_URL'),
@@ -38,16 +29,12 @@ export class AiService {
               [this.configService.get('AZURE_EGOV_HEADER')]:
                 this.configService.get('AZURE_EGOV_KEY'),
             },
+            timeout: 10_000,
           },
         ),
       );
 
-      const answer = req.data.answers[0].answer
-      await this.chatService.postAnswer(questionId, answer);
-
-      this.logger.debug(dto.text + ': ' + answer);
-
-      return answer;
+      return req.data.answers[0].answer;
     } catch (err) {
       console.error(err);
     }

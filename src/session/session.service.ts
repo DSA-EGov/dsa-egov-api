@@ -9,10 +9,14 @@ import { Repository } from 'typeorm';
 import { plainToInstance } from 'class-transformer';
 
 import { Session } from '@/entities/session.entity';
-import { ResponseDto } from '@/dto/response.dto';
 import { ActionResponseDto } from '@/dto/action-response.dto';
 
-import { PostSessionDto, SessionDto, UpdateSessionDto } from './dto';
+import {
+  PostSessionDto,
+  SessionDto,
+  SessionResponseDto,
+  UpdateSessionDto,
+} from './dto';
 
 @Injectable()
 export class SessionService {
@@ -23,7 +27,7 @@ export class SessionService {
     private readonly sessionsRepo: Repository<Session>,
   ) {}
 
-  public async getSessions(userId: string): Promise<ResponseDto<SessionDto>> {
+  public async getSessions(userId: string): Promise<SessionResponseDto> {
     let sessions = await this.sessionsRepo.find({
       where: { userId },
       order: {
@@ -35,10 +39,10 @@ export class SessionService {
 
     sessions ??= [];
 
-    return {
+    return plainToInstance(SessionResponseDto, {
       count: sessions.length,
-      data: plainToInstance(SessionDto, sessions),
-    };
+      data: sessions,
+    } satisfies SessionResponseDto);
   }
 
   public async postSession(

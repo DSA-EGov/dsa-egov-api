@@ -1,7 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
-import { WsAdapter } from '@nestjs/platform-ws';
 import { Logger } from '@nestjs/common';
 
 import { AppModule } from './app.module';
@@ -12,7 +11,6 @@ async function bootstrap() {
   const logger = new Logger(bootstrap.name);
 
   app.useLogger(logger);
-  app.useWebSocketAdapter(new WsAdapter(app));
   app.enableCors({
     origin: /https?:\/\/localhost:[0-9]{1,5}/i,
     credentials: true,

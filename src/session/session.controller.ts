@@ -11,11 +11,15 @@ import {
 import { ApiBearerAuth, ApiBody, ApiParam, ApiTags } from '@nestjs/swagger';
 import { AuthenticatedUser } from 'nest-keycloak-connect';
 
-import { ResponseDto } from '@/dto/response.dto';
 import type { User } from '@/types/user';
 import { ActionResponseDto } from '@/dto/action-response.dto';
 
-import { PostSessionDto, SessionDto, UpdateSessionDto } from './dto';
+import {
+  PostSessionDto,
+  SessionDto,
+  SessionResponseDto,
+  UpdateSessionDto,
+} from './dto';
 import { SessionService } from './session.service';
 
 @ApiTags('Sessions')
@@ -27,7 +31,7 @@ export class SessionController {
   @ApiBearerAuth()
   public getSessions(
     @AuthenticatedUser() user: User,
-  ): Promise<ResponseDto<SessionDto>> {
+  ): Promise<SessionResponseDto> {
     return this.sessionService.getSessions(user.sub);
   }
 

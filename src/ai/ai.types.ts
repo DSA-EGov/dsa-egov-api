@@ -21,3 +21,9 @@ export interface AiQuestion {
   top: number;
   question: string;
 }
+
+export interface AiQueryAnswer {
+  userId: string;
+  text: string;
+  sessionId: string;
+}

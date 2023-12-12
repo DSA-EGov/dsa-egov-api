@@ -1,25 +1,31 @@
 volumes:
-  egov_ai_pgdata:
+  pgdata:
     driver: local
-  egov_ai_keycloak_data:
-    driver: local
+
+networks:
+  egov-network:
+    driver: bridge
+    attachable: true
 
 services:
   postgres:
-    container_name: egov_db
+    container_name: egov-db
     image: postgres:latest
     ports:
-      - "5433:5432" # "5432:5432" if pg not installed locally
+      - "5433:5432"
     volumes:
-      - egov_ai_pgdata:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - egov-network
     environment:
-      PGDATA: /var/lib/postgresql/data
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
 
   keycloak:
-    container_name: egov_keycloak
+    container_name: egov-keycloak
     image: quay.io/keycloak/keycloak:legacy
+    networks:
+      - egov-network
     environment:
       DB_VENDOR: POSTGRES
       DB_ADDR: postgres
@@ -35,11 +41,15 @@ services:
       - postgres
 
   api_dev:
-    container_name: egov_api_dev
+    container_name: egov-api-dev
     build:
       dockerfile: Dockerfile.dev
     ports:
       - "3000:3000"
+    networks:
+      - egov-network
+#    extra_hosts:
+#      - "host.docker.internal:host-gateway"
     volumes:
       - ./:/app
     depends_on:
@@ -47,11 +57,13 @@ services:
       - keycloak
 
   api_prod:
-    container_name: egov_api_prod
+    container_name: egov-api-prod
     build:
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
+    networks:
+      - egov-network
     depends_on:
       - postgres
       - keycloak

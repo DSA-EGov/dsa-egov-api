@@ -6,11 +6,14 @@ import {
 } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { plainToInstance } from 'class-transformer';
 
 import { Session } from '@/entities/session.entity';
 import { Question } from '@/entities/question.entity';
-import { ResponseDto } from '@/dto/response.dto';
+import { AiService } from '@/ai/ai.service';
+import { PostQuestionDto } from '@/chat/dto/post-question.dto';
 
+import { QuestionResponseDto } from './dto/question-response.dto';
 import { QuestionDto } from './dto/question.dto';
 import { ChatController } from './chat.controller';
 
@@ -23,12 +26,13 @@ export class ChatService {
     private readonly sessionsRepo: Repository<Session>,
     @InjectRepository(Question)
     private readonly questionsRepo: Repository<Question>,
+    private readonly aiService: AiService,
   ) {}
 
   public async getQuestions(
     sessionId: string,
     userId: string,
-  ): Promise<ResponseDto<QuestionDto>> {
+  ): Promise<QuestionResponseDto> {
     const session = await this.sessionsRepo.findOne({
       where: {
         id: sessionId,
@@ -48,19 +52,18 @@ export class ChatService {
 
     return {
       count: session.questions.length,
-      data: session.questions,
+      data: session.questions.reverse(),
     };
   }
 
-  // Returns the UUID of created entity
   public async postQuestion(
+    dto: PostQuestionDto,
     userId: string,
-    sessionId: string,
-    text: string,
-  ): Promise<string> {
+  ): Promise<QuestionDto> {
     const question = this.questionsRepo.create();
+
     const session = await this.sessionsRepo.findOne({
-      where: { id: sessionId },
+      where: { id: dto.sessionId },
       relations: {
         questions: true,
       },
@@ -74,28 +77,25 @@ export class ChatService {
       throw new UnauthorizedException();
     }
 
-    question.text = text;
+    question.text = dto.text;
     question.session = session;
     session.questions.push(question);
 
     await this.questionsRepo.save(question);
     await this.sessionsRepo.save(session);
 
-    return question.id;
-  }
-
-  public async postAnswer(
-    questionId: string,
-    responseText: string,
-  ): Promise<void> {
-    const question = await this.questionsRepo.findOne({
-      where: {
-        id: questionId,
-      },
+    const answer = await this.aiService.queryAnswer({
+      text: dto.text,
+      sessionId: dto.sessionId,
+      userId,
     });
 
-    question.responseText = responseText;
+    question.responseText = answer;
 
     await this.questionsRepo.save(question);
+
+    this.logger.debug(dto.text + ': ' + answer);
+
+    return plainToInstance(QuestionDto, question);
   }
 }

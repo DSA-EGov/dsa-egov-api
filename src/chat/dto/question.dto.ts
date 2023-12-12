@@ -1,8 +1,16 @@
-import { Exclude } from 'class-transformer';
+import { Exclude, Expose } from 'class-transformer';
 
 @Exclude()
 export class QuestionDto {
-  id: string;
+  @Expose()
+  readonly id: string;
 
-  text: string;
+  @Expose()
+  readonly text: string;
+
+  @Expose()
+  readonly responseText: string;
+
+  @Expose()
+  readonly createdAt: Date;
 }

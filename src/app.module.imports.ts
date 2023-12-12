@@ -6,12 +6,11 @@ import {
   TokenValidation,
 } from 'nest-keycloak-connect';
 import { ModuleMetadata } from '@nestjs/common';
+import { HttpModule } from '@nestjs/axios';
 
 import { envValidationSchema } from '@/validation-schemas/env.schema';
 import { SessionModule } from '@/session/session.module';
-import { WsModule } from '@/ws/ws.module';
 import { ChatModule } from '@/chat/chat.module';
-import { HttpModule } from '@nestjs/axios';
 
 export const appModuleImports: ModuleMetadata['imports'] = [
   ConfigModule.forRoot({
@@ -26,23 +25,22 @@ export const appModuleImports: ModuleMetadata['imports'] = [
   }),
   TypeOrmModule.forRootAsync({
     inject: [ConfigService],
-    useFactory: (config: ConfigService<EgovEnv>) =>
-      ({
-        synchronize: config.get('NODE_ENV') === 'development',
-        type: config.get('DB_TYPE'),
-        host: config.get('DB_HOST'),
-        port: config.get('DB_PORT'),
-        schema: config.get('DB_SCHEMA'),
-        database: config.get('DB_NAME'),
-        username: config.get('DB_USER'),
-        password: config.get('DB_PASSWORD'),
-        entities: ['**/*.entity.js'],
-      }) as any,
+    useFactory: (config: ConfigService<EgovEnv>) => ({
+      synchronize: config.get('NODE_ENV') === 'development',
+      type: config.get('DB_TYPE') as any, // type error
+      host: config.get('DB_HOST'),
+      port: config.get('DB_PORT'),
+      schema: config.get('DB_SCHEMA'),
+      database: config.get('DB_NAME') as string, // UInt8Array type error
+      username: config.get('DB_USER'),
+      password: config.get('DB_PASSWORD'),
+      entities: ['**/*.entity.js'],
+    }),
   }),
   KeycloakConnectModule.registerAsync({
     inject: [ConfigService],
     useFactory: (config: ConfigService<EgovEnv>) => ({
-      useNestLogger: false,
+      useNestLogger: true,
       authServerUrl: config.get('KEYCLOAK_AUTH_URL'),
       realm: config.get('KEYCLOAK_REALM'),
       clientId: config.get('KEYCLOAK_CLIENT_ID'),
@@ -60,6 +58,5 @@ export const appModuleImports: ModuleMetadata['imports'] = [
     }),
   }),
   SessionModule,
-  WsModule,
   ChatModule,
 ];

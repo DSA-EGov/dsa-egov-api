@@ -22,6 +22,6 @@ export class Session {
   @OneToMany(() => Question, (question) => question.session)
   questions: Question[];
 
-  @CreateDateColumn({ name: 'created_at' })
+  @CreateDateColumn({ name: 'created_at', type: 'timestamp with time zone' })
   createdAt: Date;
 }
