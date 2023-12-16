@@ -7,6 +7,7 @@ import {
 } from 'nest-keycloak-connect';
 import { ModuleMetadata } from '@nestjs/common';
 import { HttpModule } from '@nestjs/axios';
+import { ServeStaticModule } from '@nestjs/serve-static';
 
 import { envValidationSchema } from '@/validation-schemas/env.schema';
 import { SessionModule } from '@/session/session.module';
@@ -57,6 +58,19 @@ export const appModuleImports: ModuleMetadata['imports'] = [
       timeout: 5000,
     }),
   }),
+  ServeStaticModule.forRootAsync({
+    inject: [ConfigService],
+    useFactory: (configService: ConfigService<EgovEnv>) => [
+      {
+        rootPath: configService.get('UI_BUILD_PATH'),
+        serveStaticOptions: {
+          cacheControl: false,
+          maxAge: 0,
+        },
+      },
+    ],
+  }),
+
   SessionModule,
   ChatModule,
 ];

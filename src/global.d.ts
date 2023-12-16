@@ -16,6 +16,8 @@ declare global {
 
     readonly SWAGGER_PATH: string;
 
+    readonly UI_BUILD_PATH: string;
+
     readonly KEYCLOAK_SECRET: string;
     readonly KEYCLOAK_CLIENT_ID: string;
     readonly KEYCLOAK_REALM: string;

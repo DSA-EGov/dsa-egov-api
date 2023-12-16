@@ -14,6 +14,8 @@ export const envValidationSchema = Joi.object<EgovEnv>({
 
   SWAGGER_PATH: Joi.string().default('api'),
 
+  UI_BUILD_PATH: Joi.string(),
+
   KEYCLOAK_SECRET: Joi.string().required(),
   KEYCLOAK_AUTH_URL: Joi.string().required(),
   KEYCLOAK_CLIENT_ID: Joi.string().required(),
