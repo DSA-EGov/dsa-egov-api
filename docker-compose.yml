@@ -27,6 +27,12 @@ services:
       DB_PASSWORD: ${POSTGRES_PASSWORD}
       KEYCLOAK_USER: ${KEYCLOAK_USER}
       KEYCLOAK_PASSWORD: ${KEYCLOAK_PASSWORD}
+      KC_HOSTNAME_STRICT_HTTPS: false
+      HOSTNAME_STRICT: false
+      KC_HOSTNAME_STRICT: false
+      KC_HTTP_ENABLED: true
+      KC_LOG: console
+      KC_PROXY: edge
     restart: always
     ports:
       - "8080:8080"
