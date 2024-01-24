@@ -36,7 +36,7 @@ export const appModuleImports: ModuleMetadata['imports'] = [
       database: config.get('DB_NAME') as string, // UInt8Array type error
       username: config.get('DB_USER'),
       password: config.get('DB_PASSWORD'),
-      entities: ['**/*.entity.js'],
+      entities: [__dirname + '/**/entities/*.entity{.ts,.js}'],
     }),
   }),
   KeycloakConnectModule.registerAsync({
