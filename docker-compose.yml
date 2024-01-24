@@ -4,15 +4,16 @@ volumes:
 
 services:
   postgres:
-    container_name: egov-db
+    container_name: egov-postgres
     image: postgres:latest
+    restart: always
     ports:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
 
   keycloak:
     container_name: egov-keycloak
@@ -21,34 +22,13 @@ services:
       DB_VENDOR: POSTGRES
       DB_ADDR: postgres
       DB_DATABASE: keycloak
-      DB_USER: postgres
+      DB_USER: ${POSTGRES_USER}
       DB_SCHEMA: public
-      DB_PASSWORD: postgres
-      KEYCLOAK_USER: admin
-      KEYCLOAK_PASSWORD: admin
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      KEYCLOAK_USER: ${KEYCLOAK_USER}
+      KEYCLOAK_PASSWORD: ${KEYCLOAK_PASSWORD}
+    restart: always
     ports:
       - "8080:8080"
     depends_on:
       - postgres
-
-  api_dev:
-    container_name: egov-api-dev
-    build:
-      dockerfile: Dockerfile.dev
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./:/app
-    depends_on:
-      - postgres
-      - keycloak
-
-  api_prod:
-    container_name: egov-api-prod
-    build:
-      dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
-    depends_on:
-      - postgres
-      - keycloak
