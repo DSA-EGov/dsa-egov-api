@@ -8,6 +8,7 @@ import {
 import { ModuleMetadata } from '@nestjs/common';
 import { HttpModule } from '@nestjs/axios';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import path from 'path';
 
 import { envValidationSchema } from '@/validation-schemas/env.schema';
 import { SessionModule } from '@/session/session.module';
@@ -62,10 +63,10 @@ export const appModuleImports: ModuleMetadata['imports'] = [
     inject: [ConfigService],
     useFactory: (configService: ConfigService<EgovEnv>) => [
       {
-        rootPath: configService.get('UI_BUILD_PATH'),
+        rootPath: path.join(__dirname, configService.get('UI_BUILD_PATH')),
         serveStaticOptions: {
-          cacheControl: false,
-          maxAge: 0,
+          cacheControl: configService.get('NODE_ENV') === 'production',
+          maxAge: configService.get('NODE_ENV') === 'production' ? 60 : 0,
         },
       },
     ],

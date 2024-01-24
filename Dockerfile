@@ -1,13 +1,12 @@
-FROM node:20-alpine
+FROM node:20-slim
 
 WORKDIR /app
 
-RUN apk update
-RUN apk upgrade
-RUN npm upgrade -g
-RUN npm i -g --force pnpm
+RUN npm install -g npm@10.2.5 && \
+     npm install -g pnpm
 
-COPY package*.json ./
+COPY package.json ./
+COPY pnpm-lock.yaml ./
 RUN pnpm install
 
 COPY . .
