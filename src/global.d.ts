@@ -11,7 +11,7 @@ declare global {
     readonly DB_PORT: string;
     readonly DB_SCHEMA: string;
     readonly DB_NAME: string;
-    readonly DB_USER: string;
+    readonly DB_USERNAME: string;
     readonly DB_PASSWORD: string;
 
     readonly SWAGGER_PATH: string;

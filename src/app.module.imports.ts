@@ -16,7 +16,7 @@ import { ChatModule } from '@/chat/chat.module';
 
 export const appModuleImports: ModuleMetadata['imports'] = [
   ConfigModule.forRoot({
-    envFilePath: ['.env.dev', '.env.prod', '.env'],
+    envFilePath: ['.env', '.env.dev'],
     isGlobal: true,
     cache: process.env['NODE_ENV'] === 'production',
     validationSchema: envValidationSchema,
@@ -34,9 +34,9 @@ export const appModuleImports: ModuleMetadata['imports'] = [
       port: config.get('DB_PORT'),
       schema: config.get('DB_SCHEMA'),
       database: config.get('DB_NAME') as string, // UInt8Array type error
-      username: config.get('DB_USER'),
+      username: config.get('DB_USERNAME'),
       password: config.get('DB_PASSWORD'),
-      entities: [__dirname + '/**/entities/*.entity{.ts,.js}'],
+      entities: ['**.entity.{js,ts}'],
     }),
   }),
   KeycloakConnectModule.registerAsync({
