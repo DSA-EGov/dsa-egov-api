@@ -9,7 +9,7 @@ export const envValidationSchema = Joi.object<EgovEnv>({
   DB_HOST: Joi.string().default('localhost'),
   DB_NAME: Joi.string().default('postgres'),
   DB_PASSWORD: Joi.string().default('postgres'),
-  DB_USER: Joi.string().default('postgres'),
+  DB_USERNAME: Joi.string().default('postgres'),
   DB_PORT: Joi.number().port().default(5432),
 
   SWAGGER_PATH: Joi.string().default('api'),
